@@ -2,14 +2,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-u_int64_t *dp = NULL;
+typedef unsigned __int128 u_int128_t;
 
-bool init_dp(u_int64_t n) {
+u_int128_t *dp = NULL;
+bool init_dp(u_int32_t n) {
     if (n < 3) {
         n = 3;
     }
 
-    if (!(dp = calloc(n + 1, sizeof(u_int64_t)))) {
+    if (!(dp = calloc(n + 1, sizeof(u_int128_t)))) {
         return false;
     }
 
@@ -19,7 +20,7 @@ bool init_dp(u_int64_t n) {
     return true;
 }
 
-u_int64_t k_step_fibonacci(u_int64_t n, u_int64_t k) {
+u_int128_t k_step_fibonacci(u_int32_t n, u_int32_t k) {
     if (!dp) {
         if (!init_dp(n)) {
             return -1;
@@ -30,13 +31,13 @@ u_int64_t k_step_fibonacci(u_int64_t n, u_int64_t k) {
         return dp[n];
     }
 
-    u_int64_t lower_bound = 0;
+    u_int32_t lower_bound = 0;
     if (k < n) {
         lower_bound = n - k;
     }
 
-    u_int64_t sol = 0;
-    for (u_int64_t i = lower_bound; i < n; i++) {
+    u_int128_t sol = 0;
+    for (u_int32_t i = lower_bound; i < n; i++) {
         sol += k_step_fibonacci(i, k);
     }
 
@@ -50,8 +51,8 @@ void print_help(void) {
 }
 
 int main(int argc, char *argv[]) {
-    u_int64_t n = 0;
-    u_int64_t k = 0;
+    u_int32_t n = 0;
+    u_int32_t k = 0;
 
     bool error = false;
     if (argc != 3) {
@@ -68,11 +69,11 @@ int main(int argc, char *argv[]) {
         return EXIT_FAILURE;
     }
 
-    u_int64_t result = k_step_fibonacci(n, k);
+    u_int128_t result = k_step_fibonacci(n, k);
     if (result < 0) {
         puts("Something went wrong.");
         return EXIT_FAILURE;
     }
-    printf(" -> %lu\n", result);
+    printf(" -> %lx%lx\n", (u_int64_t) (result >> 64), (u_int64_t) result);
     return EXIT_SUCCESS;
 }
